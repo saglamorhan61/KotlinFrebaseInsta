@@ -23,6 +23,18 @@ class MainActivity : AppCompatActivity() {
 
     fun signInClicked(view: View){
 
+        auth.signInWithEmailAndPassword(userEmailText.text.toString(),passwordText.text.toString()).addOnCompleteListener {
+            if (it.isSuccessful){
+                Toast.makeText(applicationContext,"Welcome: ${auth.currentUser?.email.toString()}",Toast.LENGTH_LONG).show()
+                val intent = Intent(applicationContext,FeedActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+        }.addOnFailureListener {
+            Toast.makeText(applicationContext,it.localizedMessage.toString(),Toast.LENGTH_LONG).show()
+
+        }
+
     }
     fun signUpClicked(view: View){
 
