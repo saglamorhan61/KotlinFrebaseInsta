@@ -1,4 +1,4 @@
-package com.saglamorhan.kotlinfrebaseinsta
+ package com.saglamorhan.kotlinfrebaseinsta
 
 import android.Manifest
 import android.content.Intent
@@ -15,8 +15,9 @@ import androidx.core.content.ContextCompat
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_upload.*
 import java.lang.Exception
+import java.util.*
 
-class UploadActivity : AppCompatActivity() {
+ class UploadActivity : AppCompatActivity() {
 
     var selectedPicture : Uri? = null
 
@@ -84,12 +85,23 @@ class UploadActivity : AppCompatActivity() {
 
     fun uploadClicked(view: View){
 
+        //UUID -> image name
+        val uuid = UUID.randomUUID()
+        val imageName = "$uuid.jpg"
+
+
         val storage = FirebaseStorage.getInstance()
         val reference = storage.reference
-        val imagesReference = reference.child("images").child("image.jpg")
+        val imagesReference = reference.child("images").child(imageName)
 
         if (selectedPicture != null){
             imagesReference.putFile(selectedPicture!!).addOnSuccessListener { taskSnapShot ->
+
+                val uploadedPictureReference = FirebaseStorage.getInstance().reference.child("images").child(imageName)
+                uploadedPictureReference.downloadUrl.addOnSuccessListener { uri->
+                    val downloadUrl = uri.toString()
+                    println(downloadUrl)
+                }
 
             }
         }
