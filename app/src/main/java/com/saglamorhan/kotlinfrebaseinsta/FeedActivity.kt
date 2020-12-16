@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_feed.*
 
 class FeedActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
@@ -46,6 +48,11 @@ class FeedActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         db = FirebaseFirestore.getInstance()
         getDataFromFirestore()
+
+        // recyclerview
+        var layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
+
     }
 
 
