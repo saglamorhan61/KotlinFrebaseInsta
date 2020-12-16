@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 
 class FeedRecyclerAdapter(private val userEmailArray: ArrayList<String>,private val userCommentArray:ArrayList<String>,private val userImageArray:ArrayList<String>) : RecyclerView.Adapter<FeedRecyclerAdapter.PostHolder>() {
 
@@ -22,6 +23,7 @@ class FeedRecyclerAdapter(private val userEmailArray: ArrayList<String>,private 
 
         holder.recyclerEmailText?.text = userEmailArray[position]
         holder.recyclerCommentText?.text = userCommentArray[position]
+        Picasso.get().load(userImageArray[position]).into(holder.recyclerImageView)
 
     }
 
