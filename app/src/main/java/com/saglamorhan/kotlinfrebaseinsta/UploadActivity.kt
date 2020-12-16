@@ -10,8 +10,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.activity_upload.*
 import java.lang.Exception
@@ -20,11 +24,17 @@ import java.util.*
  class UploadActivity : AppCompatActivity() {
 
     var selectedPicture : Uri? = null
+     private lateinit var db : FirebaseFirestore
+     private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_upload)
+        auth = FirebaseAuth.getInstance()
+        db = FirebaseFirestore.getInstance()
+
     }
+
     fun imageViewClicked(view: View){
 
      //galeriye gitme islemleri
@@ -101,6 +111,25 @@ import java.util.*
                 uploadedPictureReference.downloadUrl.addOnSuccessListener { uri->
                     val downloadUrl = uri.toString()
                     println(downloadUrl)
+
+                    val postMap = hashMapOf<String,Any>()
+                    postMap.put("downloadUrl",downloadUrl)
+                    postMap.put("userEmail",auth.currentUser!!.email.toString())
+                    postMap.put("comment",uploadCommentText.text.toString())
+                    postMap.put("date",Timestamp.now())
+
+                    //val exampleMap = hashMapOf<String,Any>("downloadUrl" to downloadUrl, ...)
+
+                    db.collection("Posts").add(postMap).addOnCompleteListener { task->
+
+
+                        if (task.isComplete && task.isSuccessful){
+                            //back
+                            finish()
+                        }
+                    }.addOnFailureListener { exception->
+                        Toast.makeText(applicationContext,exception.localizedMessage.toString(),Toast.LENGTH_LONG).show()
+                    }
                 }
 
             }
