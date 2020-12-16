@@ -16,6 +16,12 @@ class FeedActivity : AppCompatActivity() {
     private lateinit var auth : FirebaseAuth
     private lateinit var db : FirebaseFirestore
 
+    var userEmailFromFB : ArrayList<String> = ArrayList()
+    var userCommentFromFB : ArrayList<String> = ArrayList()
+    var userImageFromFB : ArrayList<String> = ArrayList()
+
+    var adapter : FeedRecyclerAdapter? = null
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
         val menuInflater = menuInflater
@@ -53,6 +59,10 @@ class FeedActivity : AppCompatActivity() {
         var layoutManager = LinearLayoutManager(this)
         recyclerView.layoutManager = layoutManager
 
+        adapter = FeedRecyclerAdapter(userEmailFromFB,userCommentFromFB,userImageFromFB)
+        recyclerView.adapter = adapter
+
+
     }
 
 
@@ -67,6 +77,10 @@ class FeedActivity : AppCompatActivity() {
                 if (snapshot != null){
                     if (!snapshot.isEmpty){
 
+                        userEmailFromFB.clear()
+                        userCommentFromFB.clear()
+                        userImageFromFB.clear()
+
                         val documents = snapshot.documents
                         for (document in documents){
                             val comment = document.get("comment") as String
@@ -74,10 +88,12 @@ class FeedActivity : AppCompatActivity() {
                             val downoladUrl = document.get("downloadUrl") as String
                             val timestamp = document.get("date") as Timestamp
                             val date = timestamp.toDate()
-                            println(comment)
-                            println(useremail)
-                            println(downoladUrl)
-                            println(date)
+
+                            userEmailFromFB.add(useremail)
+                            userCommentFromFB.add(comment)
+                            userImageFromFB.add(downoladUrl)
+
+                            adapter!!.notifyDataSetChanged()
                         }
                     }
                 }
